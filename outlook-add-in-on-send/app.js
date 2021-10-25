@@ -9,6 +9,19 @@
         mailboxItem = Office.context.mailbox.item;
     }
 
+    function prependBody(event) {
+        mailboxItem.body.prependAsync('<p>Hello World</p><p>&nbsp;</p>', { coercionType: Office.CoercionType.Html, asyncContext: event }, prependBodyCallback);
+    }
+
+    function prependBodyCallback(asyncResult) {
+        if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+            mailboxItem.notificationMessages.addAsync('NoSend', { type: 'errorMessage', message: 'Failed prepending the body upon send: ' + asyncResult.error });
+            asyncResult.asyncContext.completed({ allowEvent: false });
+        } else {
+            asyncResult.asyncContext.completed({ allowEvent: true });
+        }
+    }
+
     // Entry point for Contoso Message Body Checker add-in before send is allowed.
     // <param name="event">MessageSend event is automatically passed by BlockOnSend code to the function specified in the manifest.</param>
     function validateBody(event) {
