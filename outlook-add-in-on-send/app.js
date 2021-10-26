@@ -4,21 +4,64 @@
  */
 
     var mailboxItem;
+    var _event;
+    var _dialog;
 
     Office.initialize = function (reason) {
         mailboxItem = Office.context.mailbox.item;
     }
 
-    function prependBody(event) {
-        mailboxItem.body.prependAsync('<p>Hello World</p><p>&nbsp;</p>', { coercionType: Office.CoercionType.Html, asyncContext: event }, prependBodyCallback);
+    function showDialog(event) {
+        _event = event;
+        Office.context.ui.displayDialogAsync("https://victorious-ocean-057516210.azurestaticapps.net/dialog.html", { height: 30, width: 30, displayInIframe: true, promptBeforeOpen: true }, dialogCallback);
+    }
+
+    function dialogCallback(asyncResult) {
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+            console.log("Error displaying dialog: " + asyncResult.error.code);
+            _event.completed({ allowEvent: true });
+        }
+        else {
+            _dialog = asyncResult.value;
+            _dialog.addEventHandler(Office.EventType.DialogMessageReceived, messageHandler);
+            _dialog.addEventHandler(Office.EventType.DialogEventReceived, eventHandler);
+        }
+    }
+
+    function messageHandler(arg) {
+        _dialog.close();
+        _dialog = null;
+    
+        if (arg !== undefined && arg.message == 'prepend') {
+            prependBody();
+        } else {
+            _event.completed({ allowEvent: true });
+        }
+    }
+
+    function eventHandler(arg) {
+        _dialog.close();
+        _dialog = null;
+    
+        if (arg !== undefined) {
+            console.log(arg.error + ': Error in dialog window');
+        } else {
+            console.log('Undefined error in dialog window');
+        }
+    
+        _event.completed({ allowEvent: false });
+    }
+
+    function prependBody() {
+        mailboxItem.body.prependAsync('<p>Hello World</p>', { coercionType: Office.CoercionType.Html }, prependBodyCallback);
     }
 
     function prependBodyCallback(asyncResult) {
         if (asyncResult.status == Office.AsyncResultStatus.Failed) {
             mailboxItem.notificationMessages.addAsync('NoSend', { type: 'errorMessage', message: 'Failed prepending the body upon send: ' + asyncResult.error });
-            asyncResult.asyncContext.completed({ allowEvent: false });
+            _event.completed({ allowEvent: false });
         } else {
-            asyncResult.asyncContext.completed({ allowEvent: true });
+            _event.completed({ allowEvent: true });
         }
     }
 

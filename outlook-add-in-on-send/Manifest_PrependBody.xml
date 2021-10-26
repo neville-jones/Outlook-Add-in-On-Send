@@ -50,7 +50,7 @@
             <!-- In this particular case the function prependBody will be called within the JavaScript code referenced in residUILessFunctionFileUrl. -->
             <FunctionFile resid="residUILessFunctionFileUrl" />
             <ExtensionPoint xsi:type="Events">
-              <Event Type="ItemSend" FunctionExecution="synchronous" FunctionName="prependBody" />
+              <Event Type="ItemSend" FunctionExecution="synchronous" FunctionName="showDialog" />
             </ExtensionPoint>
           </DesktopFormFactor>
         </Host>
