@@ -53,7 +53,7 @@
     }
 
     function prependBody() {
-        mailboxItem.body.prependAsync('<p>Hello World</p>', { coercionType: Office.CoercionType.Html }, prependBodyCallback);
+        mailboxItem.body.prependAsync("<div style='text-align:center;margin-bottom:1em'><p align='center' style='text-align:center;margin-bottom:1em'><a name='_jsPrependBmk_'><b><span style='font-family:\"Arial\",\"Helvetica\",sans-serif;font-size:100%;color:#FF0000;'>Hello World</span></b></a><a name='_jsPrependBmkEnd_'></a></p></div>", { coercionType: Office.CoercionType.Html }, prependBodyCallback);
     }
 
     function prependBodyCallback(asyncResult) {
