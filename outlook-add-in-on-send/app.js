@@ -56,8 +56,10 @@ function eventHandler(arg) {
 function setXHeader() {
     const mailbox18Check = Office.context.requirements.isSetSupported("Mailbox", "1.8");
     if (mailbox18Check) {
-        alert("Mailbox v1.8 supported so going to set internet header");
+        console.log("Mailbox v1.8 supported so going to set internet header");
         mailboxItem.internetHeaders.setAsync({ "preferred-fruit": "orange" }, setXHeaderCallback);
+    } else {
+        _event.completed({ allowEvent: true });
     }
 }
 
